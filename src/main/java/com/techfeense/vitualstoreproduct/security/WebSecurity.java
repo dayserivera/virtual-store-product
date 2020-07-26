@@ -25,6 +25,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter{
 		http.headers().frameOptions().disable();
 		http.authorizeRequests()
 		.antMatchers(HttpMethod.GET, "/products").permitAll()
+		.antMatchers(HttpMethod.POST, "/products/search").permitAll()
 		.antMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
 		.and().authorizeRequests()
 		.anyRequest().authenticated()

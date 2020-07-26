@@ -7,6 +7,9 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.techfeense.vitualstoreproduct.data.ProductEntity;
 import com.techfeense.vitualstoreproduct.model.CreateProductRequestModel;
+import com.techfeense.vitualstoreproduct.model.ProductRequestModel;
 import com.techfeense.vitualstoreproduct.model.ProductResponseModel;
 import com.techfeense.vitualstoreproduct.model.ProductsResponseModel;
 import com.techfeense.vitualstoreproduct.service.ProductsService;
@@ -52,6 +56,18 @@ public class ProductsController {
 		resturnValue.setProducts(productResponseModelList);
 		
 		return new ResponseEntity<>(resturnValue, HttpStatus.OK);
+	}
+	
+	@PostMapping("/search")
+	public Page<ProductResponseModel> searchProducts(@RequestBody(required=false) ProductRequestModel productRequestModel, Pageable pageRequest){
+		if(productRequestModel == null) {
+			productRequestModel = new ProductRequestModel();
+		}
+		
+		Specification<ProductEntity> specification = productRequestModel.build();
+		Page<ProductEntity> products = productsService.findAll(specification, pageRequest);
+		
+		return ProductResponseModel.listFromProducts(products);
 	}
 	
 }
