@@ -1,19 +1,25 @@
 package com.techfeense.vitualstoreproduct.controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.techfeense.vitualstoreproduct.data.ProductEntity;
 import com.techfeense.vitualstoreproduct.model.CreateProductRequestModel;
+import com.techfeense.vitualstoreproduct.model.ProductResponseModel;
+import com.techfeense.vitualstoreproduct.model.ProductsResponseModel;
 import com.techfeense.vitualstoreproduct.service.ProductsService;
-import com.techfeense.vitualstoreproduct.shared.ProductDto;
 
 @RestController
 @RequestMapping("/products")
@@ -24,12 +30,28 @@ public class ProductsController {
 	@PostMapping
 	public ResponseEntity<CreateProductRequestModel> createProduct(@Valid @RequestBody CreateProductRequestModel productDetail) {
 		ModelMapper modelMapper = new ModelMapper();
-		ProductDto productDto = modelMapper.map(productDetail, ProductDto.class);
+		ProductEntity product = modelMapper.map(productDetail, ProductEntity.class);
 		
-		ProductDto createdProduct = productsService.createProduct(productDto);
+		ProductEntity createdProduct = productsService.createProduct(product);
 		
 		CreateProductRequestModel returnValue = modelMapper.map(createdProduct, CreateProductRequestModel.class);
 		
 		return new ResponseEntity<>(returnValue, HttpStatus.CREATED);
 	}
+	
+	@GetMapping
+	public ResponseEntity<ProductsResponseModel> listProducts(){
+		ModelMapper modelMapper = new ModelMapper();
+		ProductsResponseModel resturnValue = new ProductsResponseModel();
+		List<ProductEntity> products = productsService.getAllProducts();
+		
+		List<ProductResponseModel> productResponseModelList = products
+				  .stream()
+				  .map(product -> modelMapper.map(product, ProductResponseModel.class))
+				  .collect(Collectors.toList());
+		resturnValue.setProducts(productResponseModelList);
+		
+		return new ResponseEntity<>(resturnValue, HttpStatus.OK);
+	}
+	
 }

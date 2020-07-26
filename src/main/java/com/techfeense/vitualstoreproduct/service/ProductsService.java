@@ -1,7 +1,10 @@
 package com.techfeense.vitualstoreproduct.service;
 
-import com.techfeense.vitualstoreproduct.shared.ProductDto;
+import java.util.List;
+
+import com.techfeense.vitualstoreproduct.data.ProductEntity;
 
 public interface ProductsService {
-	ProductDto createProduct(ProductDto productDetails);
+	ProductEntity createProduct(ProductEntity productDetails);
+	List<ProductEntity> getAllProducts();
 }

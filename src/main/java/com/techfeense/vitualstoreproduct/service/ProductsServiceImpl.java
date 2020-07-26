@@ -1,16 +1,14 @@
 package com.techfeense.vitualstoreproduct.service;
 
 
+import java.util.List;
 import java.util.UUID;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.techfeense.vitualstoreproduct.data.ProductEntity;
 import com.techfeense.vitualstoreproduct.data.ProductRepository;
-import com.techfeense.vitualstoreproduct.shared.ProductDto;
 
 @Service
 public class ProductsServiceImpl implements ProductsService {
@@ -23,18 +21,20 @@ public class ProductsServiceImpl implements ProductsService {
 	}
 
 	@Override
-	public ProductDto createProduct(ProductDto productDetails) {
+	public ProductEntity createProduct(ProductEntity productDetails) {
 		productDetails.setProductId(UUID.randomUUID().toString());
 		
-		ModelMapper modelMapper = new ModelMapper();
-		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+		this.productRepository.save(productDetails);
 		
-		ProductEntity productEntity = modelMapper.map(productDetails, ProductEntity.class);
-		this.productRepository.save(productEntity);
-		
-		ProductDto returnValue = modelMapper.map(productEntity, ProductDto.class);
-		
-		return returnValue;
+		return productDetails;
 	}
+
+	@Override
+	public List<ProductEntity> getAllProducts() {
+		
+		return productRepository.findAll();
+	}
+	
+	
 
 }

@@ -1,21 +1,12 @@
 package com.techfeense.vitualstoreproduct.model;
 
-public class CreateProductResponseModel {
-	private String productId;
+public class ProductRequestModel {
 	
 	private String title;
 	
 	private String description;
 	
 	private double price;
-
-	public String getProductId() {
-		return productId;
-	}
-
-	public void setProductId(String productId) {
-		this.productId = productId;
-	}
 
 	public String getTitle() {
 		return title;
